@@ -1,5 +1,3 @@
-<!-- mellea-pr-edited-marker: do not remove this marker -->
-
 ## Bug Fix Checklist
 
 Thanks for submitting a bug fix! Please ensure:

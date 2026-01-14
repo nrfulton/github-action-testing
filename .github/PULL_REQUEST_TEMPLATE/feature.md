@@ -1,5 +1,3 @@
-<!-- mellea-pr-edited-marker: do not remove this marker -->
-
 ## Feature Checklist
 
 Thanks for submitting a new feature! Please ensure:

@@ -48,8 +48,13 @@ jobs:
           TEMPLATE_FILE=".github/PULL_REQUEST_TEMPLATE/${PR_TYPE}.md"
 
           if [ -f "$TEMPLATE_FILE" ]; then
+            MARKER="<!-- mellea-pr-edited-marker: do not remove this marker -->"
             TEMPLATE_CONTENT=$(cat "$TEMPLATE_FILE")
-            gh pr edit ${{ github.event.pull_request.number }} --body "$TEMPLATE_CONTENT"
+
+            NEW_BODY="${MARKER}
+            ${TEMPLATE_CONTENT}"
+
+            gh pr edit ${{ github.event.pull_request.number }} --body "$NEW_BODY"
             echo "Updated PR body with ${PR_TYPE} checklist"
           else
             echo "Template file not found: $TEMPLATE_FILE"
