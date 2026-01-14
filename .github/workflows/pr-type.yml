@@ -1,7 +1,7 @@
 name: PR Comment Bot
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened]
 
 jobs:
@@ -42,3 +42,5 @@ jobs:
             .github/PULL_REQUEST_TEMPLATE/default.md
         
         # TODO: JAL. Do the path construction as a part of the PR script, then just include that in message-path...; must be a new line
+        # TODO: JAL. see if others can edit the comment once posted
+        # TODO: JAL.
