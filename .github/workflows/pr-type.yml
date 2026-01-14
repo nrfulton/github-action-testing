@@ -38,7 +38,6 @@ jobs:
         uses: mshick/add-pr-comment@b8f338c590a895d50bcbfa6c5859251edc8952fc
         with:
           message-path: | 
-            .github/PULL_REQUEST_TEMPLATE/${{ steps.detect-type.outputs.pr_type }}.md
-            .github/PULL_REQUEST_TEMPLATE/default.md
+            .github/PULL_REQUEST_TEMPLATE/${{ steps.detect-type.outputs.pr_type }}.md,.github/PULL_REQUEST_TEMPLATE/default.md
         
-        # TODO: JAL. Can do multiple message-paths here...
+        # TODO: JAL. Do the path construction as a part of the PR script, then just include that in message-path...
