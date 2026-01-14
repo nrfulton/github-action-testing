@@ -5,13 +5,13 @@ on:
     types: [opened]
 
 jobs:
-  add-comment:
+  update-pr-body:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
       contents: read
     steps:
-      - name: Checkout code
+      - name: Checkout code # Checks out the base branch, not PR branch.
         uses: actions/checkout@v4
 
       - name: Detect PR type from checkboxes
@@ -33,14 +33,25 @@ jobs:
           echo "pr_type=$PR_TYPE" >> "$GITHUB_OUTPUT"
           echo "Detected PR type: $PR_TYPE"
 
-      - name: Post comment based on PR type
+      - name: Update PR body with checklist
         if: steps.detect-type.outputs.pr_type != ''
-        uses: mshick/add-pr-comment@b8f338c590a895d50bcbfa6c5859251edc8952fc
-        with:
-          message-path: | 
-            .github/PULL_REQUEST_TEMPLATE/${{ steps.detect-type.outputs.pr_type }}.md
-            .github/PULL_REQUEST_TEMPLATE/default.md
-        
-        # TODO: JAL. Do the path construction as a part of the PR script, then just include that in message-path...; must be a new line
-        # TODO: JAL. see if others can edit the comment once posted
-        # TODO: JAL.
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_TYPE: ${{ steps.detect-type.outputs.pr_type }}
+        run: |
+          TEMPLATE_FILE=".github/PULL_REQUEST_TEMPLATE/${PR_TYPE}.md"
+
+          if [ -f "$TEMPLATE_FILE" ]; then
+            TEMPLATE_CONTENT=$(cat "$TEMPLATE_FILE")
+            NEW_BODY="${PR_BODY}
+
+            ---
+
+            ${TEMPLATE_CONTENT}"
+
+                gh pr edit ${{ github.event.pull_request.number }} --body "$NEW_BODY"
+                echo "Updated PR body with ${PR_TYPE} checklist"
+            else
+                echo "Template file not found: $TEMPLATE_FILE"
+            fi
